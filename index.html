@@ -44,6 +44,11 @@ details{margin-top:4px}
 summary{cursor:pointer;font-weight:800;color:var(--azul)}
 details p{margin:10px 0 0}
 .sol{font-family:Fraunces,Georgia,serif;font-size:1.15rem}
+.pistas{margin:0 0 12px;padding-left:1.4em}
+.pistas:empty{display:none}
+.pistas li{margin:0 0 8px;padding:8px 10px;background:var(--azul2);border-radius:10px}
+.pistas li.nueva{animation:entra .4s ease-out}
+@keyframes entra{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .pie{color:var(--muted);font-size:.88rem;text-align:center;margin-top:22px}
 @media (max-width:480px){.precios{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -75,10 +80,9 @@ details p{margin:10px 0 0}
   </section>
 
   <section class="card">
-    <details id="pista">
-      <summary>Una pista</summary>
-      <p>Pasa todo a céntimos. Si los precios son a, b, c y d céntimos, la suma pide a + b + c + d = 777 y el producto pide a · b · c · d = 777 000 000. Descompón ese número en factores primos y mira qué cuatro trozos pueden sumar 777.</p>
-    </details>
+    <h2>Pistas</h2>
+    <ol class="pistas" id="pistas"></ol>
+    <button class="sec" id="otraPista" type="button">Dame una pista</button>
   </section>
 
   <section class="card">
@@ -145,6 +149,25 @@ details p{margin:10px 0 0}
   });
   document.getElementById('borrar').addEventListener('click',()=>{ins.forEach(i=>i.value='');actualizar();ins[0].focus();});
   actualizar();
+
+  // Pistas sucesivas: cada pulsación añade una nueva
+  const PISTAS=[
+    'Pasa todo a céntimos. Si los precios son a, b, c y d céntimos, la suma pide a + b + c + d = 777 y el producto pide a · b · c · d = 777 000 000.',
+    'Descompón ese número en factores primos: 777 000 000 = 2⁶ · 3 · 5⁶ · 7 · 37. Cada precio es un trozo de ese producto.',
+    'El 37 es un primo grande y solo aparece una vez: uno de los precios es múltiplo de 0,37 €.',
+    'Hay seis cincos que repartir. Uno de los precios es 1,25 €.',
+    'Otro de los precios es 3,50 €.',
+    'Los dos precios que faltan suman 3,02 € y, en céntimos, su producto es 17 760. Ya solo queda resolver una ecuación de segundo grado.'
+  ];
+  const lista=document.getElementById('pistas'),bP=document.getElementById('otraPista');
+  let dadas=0;
+  bP.addEventListener('click',()=>{
+    if(dadas>=PISTAS.length)return;
+    lista.querySelectorAll('.nueva').forEach(li=>li.classList.remove('nueva'));
+    const li=document.createElement('li');li.className='nueva';li.textContent=PISTAS[dadas++];lista.append(li);
+    if(dadas<PISTAS.length)bP.textContent='Otra pista (llevas '+dadas+' de '+PISTAS.length+')';
+    else{bP.textContent='No hay más pistas: mira la solución';bP.disabled=true;bP.style.opacity='.6';bP.style.cursor='default';}
+  });
 })();
 </script>
 </body>
