@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los tres sietes</title>
+<meta name="description" content="Cuatro precios que suman lo mismo que multiplican: 7,77 €. Una variante del clásico acertijo de la tienda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef5ff;--card:#fff;--ink:#1f2a44;--muted:#56627e;--azul:#2f64c8;--azul2:#dce8ff;--ok:#1f8a4c;--okbg:#e2f6ea;--mal:#b3392f;--malbg:#fde9e6;--linea:#c7d6f2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;font-size:17px;line-height:1.5;font-variant-ligatures:none}
+button,input{font-variant-ligatures:none}
+main{max-width:640px;margin:0 auto;padding:28px 16px 56px}
+h1{font-family:Fraunces,Georgia,serif;font-weight:800;font-size:clamp(2.2rem,9vw,3.2rem);line-height:1;margin:0 0 6px;color:var(--azul)}
+.sub{color:var(--muted);margin:0 0 22px}
+.card{background:var(--card);border:2px solid var(--linea);border-radius:18px;padding:18px 18px 20px;margin-bottom:18px}
+.historia p{margin:0 0 10px}
+.historia p:last-child{margin:0}
+.ticket{font-family:Fraunces,Georgia,serif;font-size:1.05rem;background:var(--azul2);border-radius:12px;padding:10px 14px;margin:12px 0 0}
+h2{font-family:Fraunces,Georgia,serif;font-size:1.3rem;margin:0 0 12px;color:var(--azul)}
+.precios{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.precios label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted);font-weight:600}
+.precios .campo{display:flex;align-items:center;border:2px solid var(--linea);border-radius:12px;background:#fbfdff;padding:0 8px}
+.precios input{width:100%;min-width:0;border:0;background:transparent;font:inherit;font-size:1.2rem;font-weight:800;color:var(--ink);padding:9px 2px;outline:none}
+.precios .campo:focus-within{border-color:var(--azul)}
+.precios .eur{color:var(--muted);font-weight:700}
+.cuentas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.cuenta{background:var(--azul2);border-radius:12px;padding:8px 12px}
+.cuenta small{display:block;color:var(--muted);font-weight:700}
+.cuenta b{font-size:1.25rem}
+.cuenta.bien{background:var(--okbg);color:var(--ok)}
+.botones{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button{font:inherit;font-weight:800;border:0;border-radius:12px;padding:11px 18px;cursor:pointer}
+.prim{background:var(--azul);color:#fff}
+.sec{background:var(--azul2);color:var(--azul)}
+button:focus-visible{outline:3px solid #f0a04b;outline-offset:2px}
+#msg{min-height:1.5em;margin:12px 0 0;font-weight:700;border-radius:10px}
+#msg.ok{background:var(--okbg);color:var(--ok);padding:10px 12px}
+#msg.mal{background:var(--malbg);color:var(--mal);padding:10px 12px}
+details{margin-top:4px}
+summary{cursor:pointer;font-weight:800;color:var(--azul)}
+details p{margin:10px 0 0}
+.sol{font-family:Fraunces,Georgia,serif;font-size:1.15rem}
+.pie{color:var(--muted);font-size:.88rem;text-align:center;margin-top:22px}
+@media (max-width:480px){.precios{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Los tres sietes</h1>
+  <p class="sub">Una variante del clásico acertijo de la tienda, con otros cuatro precios.</p>
+
+  <section class="card historia">
+    <p>Una clienta deja cuatro artículos en el mostrador. El dependiente, con prisa, <b>multiplica</b> los cuatro precios en vez de sumarlos y le dice: «Son 7,77 €».</p>
+    <p>La clienta le avisa del error. El dependiente vuelve a hacer la cuenta, esta vez <b>sumando</b>, y le sale exactamente lo mismo: 7,77 €.</p>
+    <p>Todos los precios son cantidades exactas de euros y céntimos.</p>
+    <div class="ticket">¿Cuánto cuesta cada artículo?</div>
+  </section>
+
+  <section class="card">
+    <h2>Tu respuesta</h2>
+    <div class="precios" id="precios"></div>
+    <div class="cuentas">
+      <div class="cuenta" id="cSuma"><small>Suma</small><b id="suma">0,00 €</b></div>
+      <div class="cuenta" id="cProd"><small>Producto</small><b id="prod">0,00 €</b></div>
+    </div>
+    <div class="botones">
+      <button class="prim" id="comprobar" type="button">Comprobar</button>
+      <button class="sec" id="borrar" type="button">Borrar</button>
+    </div>
+    <div id="msg" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="card">
+    <details id="pista">
+      <summary>Una pista</summary>
+      <p>Pasa todo a céntimos. Si los precios son a, b, c y d céntimos, la suma pide a + b + c + d = 777 y el producto pide a · b · c · d = 777 000 000. Descompón ese número en factores primos y mira qué cuatro trozos pueden sumar 777.</p>
+    </details>
+  </section>
+
+  <section class="card">
+    <details id="solucion">
+      <summary>Ver la solución</summary>
+      <p class="sol">0,80 € · 1,25 € · 2,22 € · 3,50 €</p>
+      <p>Suma: 0,80 + 1,25 + 2,22 + 3,50 = 7,77. Producto: 0,80 × 1,25 = 1; 1 × 2,22 = 2,22; 2,22 × 3,50 = 7,77.</p>
+      <p>Es la única solución: lo he comprobado con un ordenador probando todas las combinaciones posibles de cuatro precios.</p>
+    </details>
+  </section>
+
+  <p class="pie">El original, con 7,11 €, es un acertijo clásico de matemáticas recreativas.</p>
+</main>
+<script>
+(function(){
+  const T=777, P=777000000n;
+  const cont=document.getElementById('precios');
+  const ins=[];
+  for(let i=0;i<4;i++){
+    const l=document.createElement('label');
+    l.innerHTML='Artículo '+(i+1)+'<span class="campo"><input inputmode="decimal" autocomplete="off" placeholder="0,00" aria-label="Precio del artículo '+(i+1)+' en euros"><span class="eur">€</span></span>';
+    cont.append(l);ins.push(l.querySelector('input'));
+  }
+  // Convierte el texto a céntimos (null si no es un precio válido)
+  function cent(s){
+    s=s.trim().replace('€','').trim().replace(',','.');
+    if(!/^\d+(\.\d{1,2})?$/.test(s))return null;
+    const [e,c='']=s.split('.');
+    return Number(e)*100+Number((c+'00').slice(0,2));
+  }
+  const fmt=n=>(n/100).toFixed(2).replace('.',',')+' €';
+  // Producto en euros con céntimos (truncado si no es exacto)
+  function fmtProd(cs){
+    let p=1n;for(const c of cs)p*=BigInt(c);
+    const exacto=p%1000000n===0n;
+    const enCent=p/1000000n;
+    const e=enCent/100n,c=enCent%100n;
+    return {txt:(exacto?'':'≈ ')+e.toString()+','+c.toString().padStart(2,'0')+' €',p};
+  }
+  const suma=document.getElementById('suma'),prod=document.getElementById('prod');
+  const cS=document.getElementById('cSuma'),cP=document.getElementById('cProd');
+  const msg=document.getElementById('msg');
+  function leer(){return ins.map(i=>cent(i.value));}
+  function actualizar(){
+    const cs=leer();
+    const val=cs.map(c=>c===null?0:c);
+    const s=val.reduce((a,b)=>a+b,0);
+    suma.textContent=fmt(s);cS.classList.toggle('bien',s===T&&cs.every(c=>c!==null));
+    if(cs.every(c=>c!==null&&c>0)){const r=fmtProd(cs);prod.textContent=r.txt;cP.classList.toggle('bien',r.p===P);}
+    else{prod.textContent='—';cP.classList.remove('bien');}
+    msg.textContent='';msg.className='';
+  }
+  ins.forEach(i=>i.addEventListener('input',actualizar));
+  document.getElementById('comprobar').addEventListener('click',()=>{
+    const cs=leer();
+    if(cs.some(c=>c===null||c===0)){msg.textContent='Escribe los cuatro precios, con céntimos (por ejemplo 1,25).';msg.className='mal';return;}
+    const s=cs.reduce((a,b)=>a+b,0);
+    let p=1n;for(const c of cs)p*=BigInt(c);
+    const sOk=s===T,pOk=p===P;
+    if(sOk&&pOk){msg.textContent='¡Correcto! Suman 7,77 € y multiplicados también dan 7,77 €.';msg.className='ok';}
+    else if(sOk){msg.textContent='La suma da 7,77 €, pero el producto no.';msg.className='mal';}
+    else if(pOk){msg.textContent='El producto da 7,77 €, pero la suma no.';msg.className='mal';}
+    else{msg.textContent='Ni la suma ni el producto dan 7,77 €.';msg.className='mal';}
+  });
+  document.getElementById('borrar').addEventListener('click',()=>{ins.forEach(i=>i.value='');actualizar();ins[0].focus();});
+  actualizar();
+})();
+</script>
+</body>
+</html>
